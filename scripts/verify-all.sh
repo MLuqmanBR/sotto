@@ -46,6 +46,7 @@ command_surface(){ python3 scripts/check-command-surface.py; }
 palette()        { node scripts/check-palette.js; }
 shortcuts()      { node scripts/check-shortcuts.js; }
 readme()         { python3 scripts/check-readme.py; }
+dictlayout()     { ./scripts/check-dictionary-layout.py; }
 signing()        { ./scripts/sign.sh; }
 isolation()      { ./scripts/isolation-test.sh; }
 gui()            { ./scripts/gui-e2e.sh; }
@@ -62,6 +63,7 @@ step "Command surface"                     command_surface
 step "Accent palette"                      palette
 step "Shortcut defaults and guard"         shortcuts
 step "Public README"                       readme
+step "Dictionary row layout"                dictlayout
 step "Isolation suite"                     isolation
 step "Real window, real buttons"           gui
 step "X11 placement on an offset monitor"  x11

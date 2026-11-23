@@ -960,14 +960,16 @@ function renderDictionary() {
       el.innerHTML = `
         <input type="checkbox" class="mini-switch" ${e.enabled === false ? "" : "checked"}
                aria-label="Enable ${escapeHtml(e.preferred)}" title="On or off" />
-        <span class="pref">${escapeHtml(e.preferred)}</span>
-        <span class="aliases">${e.aliases.length ? "also: " + e.aliases.map(escapeHtml).join(", ") : ""}</span>
-        <span class="spacer"></span>
+        <div class="entry-main">
+          <span class="pref">${escapeHtml(e.preferred)}</span>
+          ${e.aliases.length ? `<span class="aliases">also ${e.aliases.map(escapeHtml).join(", ")}</span>` : ""}
+        </div>
         <select class="mini-select" aria-label="Case policy for ${escapeHtml(e.preferred)}" title="How casing is handled">
           <option value="exact"${e.case_policy !== "preserve" ? " selected" : ""}>As written</option>
           <option value="preserve"${e.case_policy === "preserve" ? " selected" : ""}>Follow input</option>
         </select>
-        <button title="Remove">Remove</button>
+        <button class="remove" title="Remove ${escapeHtml(e.preferred)}"
+                aria-label="Remove ${escapeHtml(e.preferred)}">Remove</button>
       `;
       el.querySelector(".mini-switch").addEventListener("change", (ev) => {
         const next = entries.map((x, j) => (j === i ? { ...x, enabled: ev.target.checked } : x));
@@ -979,7 +981,7 @@ function renderDictionary() {
         );
         saveEntries(next, replacements);
       });
-      el.querySelector("button").addEventListener("click", () => {
+      el.querySelector(".remove").addEventListener("click", () => {
         saveEntries(entries.filter((_, j) => j !== i), replacements);
       });
       list.appendChild(el);
@@ -997,16 +999,18 @@ function renderDictionary() {
       el.innerHTML = `
         <input type="checkbox" class="mini-switch" ${r.enabled === false ? "" : "checked"}
                aria-label="Enable replacement" title="On or off" />
-        <span class="pref">${escapeHtml(r.source)}</span>
-        <span class="aliases">→ ${escapeHtml(r.target)}</span>
-        <span class="spacer"></span>
-        <button title="Remove">Remove</button>
+        <div class="entry-main">
+          <span class="pref">${escapeHtml(r.source)}</span>
+          <span class="aliases">becomes ${escapeHtml(r.target)}</span>
+        </div>
+        <button class="remove" title="Remove replacement"
+                aria-label="Remove replacement ${escapeHtml(r.source)}">Remove</button>
       `;
       el.querySelector(".mini-switch").addEventListener("change", (ev) => {
         const next = replacements.map((x, j) => (j === i ? { ...x, enabled: ev.target.checked } : x));
         saveEntries(entries, next);
       });
-      el.querySelector("button").addEventListener("click", () => {
+      el.querySelector(".remove").addEventListener("click", () => {
         saveEntries(entries, replacements.filter((_, j) => j !== i));
       });
       rlist.appendChild(el);

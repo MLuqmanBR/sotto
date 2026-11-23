@@ -348,13 +348,25 @@ fi
 
 # The window and the store must agree — a transcript shown but not saved, or saved
 # but not shown, is the kind of split that makes history untrustworthy.
-if [[ -n "$BODY" && -n "$HIST_TEXT" ]]; then
-  FIRST_WORD_BODY="$(awk '{print $1}' <<<"$BODY")"
-  if [[ "$BODY" == *"$FIRST_WORD_BODY"* && "$HIST_TEXT" == *"$FIRST_WORD_BODY"* ]]; then
-    ok "the window and History show the same transcript"
-  else
-    bad "the window and History show the same transcript"
-  fi
+#
+# The body is `innerText` with newlines flattened to " / ", so it opens with a
+# separator and ends with a footer ("13s audio · 224 ms · copied to clipboard").
+# Comparing its first whitespace-separated token compared the separator "/", which
+# History can never contain — the assertion failed against a correct app. Strip the
+# separators and footer, then require exact equality: both strings come from the
+# same take, so any difference is a real split and not a rounding error.
+BODY_TEXT="$(python3 - "$BODY" <<'PY'
+import re, sys
+parts = [p.strip() for p in sys.argv[1].split(" / ")]
+parts = [p for p in parts if p and "audio \u00b7" not in p]
+print(re.sub(r"\s+", " ", " ".join(parts)).strip())
+PY
+)"
+if [[ -n "$BODY_TEXT" && -n "$HIST_TEXT" && "$BODY_TEXT" == "$HIST_TEXT" ]]; then
+  ok "the window and History show the same transcript"
+else
+  bad "the window and History show the same transcript" \
+      "window=\"${BODY_TEXT:0:70}\" history=\"${HIST_TEXT:0:70}\""
 fi
 
 grep -q "^STEP stopping" "$OUT" 2>/dev/null \
