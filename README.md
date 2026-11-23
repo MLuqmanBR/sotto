@@ -46,6 +46,9 @@ sudo dnf install ./sotto-1.0.0-1.x86_64.rpm
 sudo apt install ./Sotto_1.0.0_amd64.deb
 ```
 
+Both packages are signed; see [Verify the download](#verify-the-download) to
+confirm yours before installing.
+
 The model, speech engine, launcher entry and icon are all inside the package.
 Installing is the only step; the first dictation does not fetch anything.
 
@@ -95,12 +98,28 @@ repository, or from the release, then verify.
 
 ```bash
 sudo rpm --import sotto-signing-key.asc
+sudo dnf install --setopt=localpkg_gpgcheck=1 ./sotto-1.0.0-1.x86_64.rpm
+```
+
+`--setopt=localpkg_gpgcheck=1` is what makes `dnf` actually enforce the
+signature. Without it, `dnf` installs a file you pass by path without checking
+its signature and prints a `skipped OpenPGP checks` warning — the check is not
+implied by installing a local file. With it, a package that has been modified
+after signing is refused:
+
+```
+Transaction failed: Signature verification failed.
+OpenPGP check for package "sotto-1.0.0-1.x86_64" … has failed
+```
+
+You can also check the file on its own, without installing:
+
+```bash
 rpmkeys --checksig sotto-1.0.0-1.x86_64.rpm
 ```
 
 You should see `Header OpenPGP V4 RSA/SHA256 signature … : OK` and
-`Payload SHA256 digest: OK`. `dnf` will also report the signature when it
-installs the file.
+`Payload SHA256 digest: OK`.
 
 **Debian / Ubuntu**
 

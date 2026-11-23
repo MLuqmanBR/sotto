@@ -62,8 +62,11 @@ if [[ "${1:-}" != "--verify-only" ]]; then
   fi
 
   head_ "3. Checksums for both"
-  ( cd target/release/bundle && sha256sum "deb/$(basename "$DEB")" "rpm/$(basename "$RPM")" ) \
-    > "target/release/bundle/SHA256SUMS"
+  # Flat file names, because a user downloads both assets into one directory and
+  # runs `sha256sum -c SHA256SUMS` there. Paths like `deb/…` would not resolve.
+  ( cd target/release/bundle \
+    && sha256sum "deb/$(basename "$DEB")" "rpm/$(basename "$RPM")" \
+    | sed 's#  deb/#  #; s#  rpm/#  #' ) > "target/release/bundle/SHA256SUMS"
   gpg --batch --yes --local-user "$FPR" --armor --detach-sign \
       --output "target/release/bundle/SHA256SUMS.asc" "target/release/bundle/SHA256SUMS" 2>/dev/null \
     && ok "SHA256SUMS and its signature written" \
