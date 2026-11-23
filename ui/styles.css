@@ -467,7 +467,18 @@ input[type="text"], input[type="search"], input:not([type]), select, textarea {
   font: inherit;
   font-size: 13.5px;
 }
-textarea { resize: vertical; font-family: var(--font); }
+/* A wrapping textarea never needs a horizontal scrollbar. Under the X11
+   backend WebKit measures the empty field's content a few pixels wider than
+   its viewport, so `overflow: auto` added a horizontal bar and a white
+   scroll-corner square across the bottom of the Test field. Hiding only the
+   horizontal axis removes both and leaves vertical scrolling and the resize
+   grip intact; the Wayland rendering is unchanged. */
+textarea {
+  resize: vertical;
+  font-family: var(--font);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
 input:focus, select:focus, textarea:focus {
   outline: none;
   border-color: var(--accent);

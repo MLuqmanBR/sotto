@@ -296,7 +296,7 @@ buttons, X11 overlay placement on an offset monitor, the real tray over D-Bus,
 package invariants, signing and signature verification, real install/uninstall
 of both formats, and three repeated runs to catch flakiness.
 
-Current results: **164 workspace tests, 25 dictionary-layout checks, 51
+Current results: **164 workspace tests, 28 dictionary-layout checks, 51
 isolation checks, 32 GUI checks, 10 X11 checks, 23 tray checks, 24 shortcut
 checks, 6 README checks, 9 signing checks, 26 RPM install checks, 24 deb
 install checks, 16 `.deb` + 16 `.rpm` package invariants, 3/3 stable runs** —

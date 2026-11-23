@@ -119,7 +119,17 @@ MEASURE = r"""
       aliasClearOfSelect: !ali || !sel || ali.right <= sel.left + 0.5
     };
   });
-  return JSON.stringify({ panelRight: pr.right, panelLeft: pr.left, rows: out });
+  var ta = document.querySelector('#dict-test');
+  var tcs = ta ? getComputedStyle(ta) : null;
+  return JSON.stringify({
+    panelRight: pr.right, panelLeft: pr.left, rows: out,
+    testField: ta ? {
+      overflowX: tcs.overflowX,
+      overflowY: tcs.overflowY,
+      needsHorizontalScroll: ta.scrollWidth > ta.clientWidth,
+      boxSizing: tcs.boxSizing
+    } : null
+  });
 })()
 """
 
@@ -231,6 +241,26 @@ def main() -> int:
               f"width={r['mainWidth']:.0f}px")
         check(f'{name}: aliases are clear of the selector', r["aliasClearOfSelect"],
               f"alias right={r['aliasRight']}, selector left={r['selectLeft']}")
+
+    # The Test field. This one cannot be caught by geometry alone: under the X11
+    # backend WebKit reports the empty field's content a few pixels wider than its
+    # viewport, and with `overflow-x: auto` that paints a horizontal scrollbar and
+    # a white scroll-corner square across the bottom of the panel. Offscreen
+    # rendering does not reproduce it, so the check asserts the rule that makes
+    # both backends correct rather than the symptom of one.
+    field = data.get("testField")
+    check("the Test field is present", field is not None)
+    if field:
+        check(
+            "the Test field cannot paint a horizontal scrollbar",
+            field["overflowX"] == "hidden",
+            f"overflow-x={field['overflowX']}",
+        )
+        check(
+            "the Test field still scrolls vertically when it must",
+            field["overflowY"] == "auto",
+            f"overflow-y={field['overflowY']}",
+        )
 
     print()
     if failures:
