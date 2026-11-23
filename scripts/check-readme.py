@@ -17,7 +17,23 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-README = ROOT / "public" / "README.md"
+
+
+def find_readme() -> Path:
+    """The README to check, in either checkout shape.
+
+    In the development tree the publishable files live under `public/`. In the
+    public repository that directory *is* the root, and `public/README.md` does
+    not exist. Choosing the first that exists keeps one script working for both
+    instead of failing contributors with a path they never had.
+    """
+    for candidate in (ROOT / "public" / "README.md", ROOT / "README.md"):
+        if candidate.is_file():
+            return candidate
+    return ROOT / "public" / "README.md"
+
+
+README = find_readme()
 
 failures = 0
 
