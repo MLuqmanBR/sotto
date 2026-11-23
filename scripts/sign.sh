@@ -36,6 +36,19 @@ head_(){ echo; echo "$(printf '\033[1m')$1$(printf '\033[0m')"; }
 
 [[ -n "$FPR" ]] || { echo "no public key at $KEYFILE" >&2; exit 1; }
 
+# Signing needs the private key. A contributor without it cannot sign, and a
+# skipped check that reports success would be the exact failure mode this suite
+# exists to prevent — so the skip is loud and says what was not checked.
+if [[ "${1:-}" != "--verify-only" ]]; then
+  if ! gpg --list-secret-keys "$FPR" >/dev/null 2>&1; then
+    echo
+    echo "  SKIP  signing: no secret key for $FPR on this machine."
+    echo "        The packages in target/ are NOT signed by this run."
+    echo "        On the release machine the key is present and this step runs."
+    exit 0
+  fi
+fi
+
 if [[ "${1:-}" != "--verify-only" ]]; then
   head_ "1. Sign the RPM"
   for f in "$RPM" "$DEB"; do

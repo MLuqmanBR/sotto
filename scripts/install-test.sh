@@ -57,8 +57,14 @@ if ! sudo -n true 2>/dev/null; then
   exit 0
 fi
 if rpm -q sotto >/dev/null 2>&1; then
-  echo "  SKIP  a package named 'sotto' is already installed; this test will not remove it" >&2
-  exit 0
+  # Refusing to remove a package that is already installed is correct: this test
+  # must never uninstall someone's working copy. But reporting that refusal as a
+  # pass made the gate green while the install path went untested — a check that
+  # cannot fail. So the refusal is an explicit failure, with the way out named.
+  echo "  FAIL  a package named 'sotto' is installed, so install/uninstall is untested" >&2
+  echo "        Remove it first:  sudo dnf remove sotto" >&2
+  echo "        Then re-run. This test installs and removes its own copy." >&2
+  exit 3
 fi
 [[ -f "$RPM" ]] || { echo "no package at $RPM — run scripts/package.sh first" >&2; exit 1; }
 
