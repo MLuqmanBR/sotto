@@ -1,0 +1,12 @@
+/target
+**/target
+
+# The 178 MB model is fetched for development and bundled into release packages.
+# It is intentionally not committed; see model/README.md.
+/model/*
+!/model/README.md
+
+# Build artifacts
+*.deb
+*.rpm
+*.AppImage

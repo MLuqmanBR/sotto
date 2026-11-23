@@ -1,0 +1,32 @@
+[package]
+name = "sotto"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Sotto — quiet, local-first dictation"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["tray-icon", "image-png"] }
+serde = { workspace = true }
+serde_json = { workspace = true }
+sotto-core = { path = "../crates/sotto-core" }
+sotto-dict = { path = "../crates/sotto-dict" }
+uuid = { version = "1", features = ["v4"] }
+tauri-plugin-global-shortcut = "2"
+gtk = { version = "0.18", features = ["v3_24"] }
+libc = "0.2.191"
+libloading = "0.9.1"
+tauri-plugin-single-instance = "2"
+
+[features]
+default = []
+
+# A test-only surface for driving the real window from a script: a `probe_write`
+# command and a hook that evaluates a script from a file. It exists because the
+# app's most important path — press the button, speak, get words — can only be
+# reached through the webview, and synthetic clicks do not register under Wayland
+# here. Gated behind a non-default feature so a release build cannot contain it.
+e2e = []

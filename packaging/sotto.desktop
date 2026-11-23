@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=Sotto
+GenericName=Dictation
+Comment=Quiet, local-first dictation
+Exec=sotto
+Icon=sotto
+Terminal=false
+Categories=Utility;
+Keywords=dictation;speech;voice;transcription;stt;
+StartupWMClass=sotto
+StartupNotify=false

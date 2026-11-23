@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1B2030"/>
+      <stop offset="1" stop-color="#0B0D11"/>
+    </linearGradient>
+    <linearGradient id="wave" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6FA6FF"/>
+      <stop offset="1" stop-color="#2F6BE0"/>
+    </linearGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="14" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- squircle body -->
+  <rect x="16" y="16" width="480" height="480" rx="112" fill="url(#bg)"/>
+  <rect x="16" y="16" width="480" height="480" rx="112" fill="none"
+        stroke="#2A3145" stroke-width="3"/>
+
+  <!-- inner subtle ring -->
+  <rect x="40" y="40" width="432" height="432" rx="92" fill="none"
+        stroke="#FFFFFF" stroke-opacity="0.045" stroke-width="2"/>
+
+  <!-- waveform: five bars, centre tallest -->
+  <g filter="url(#glow)" fill="url(#wave)">
+    <rect x="118" y="216" width="34" height="80"  rx="17"/>
+    <rect x="176" y="168" width="34" height="176" rx="17"/>
+    <rect x="234" y="112" width="34" height="288" rx="17"/>
+    <rect x="292" y="168" width="34" height="176" rx="17"/>
+    <rect x="350" y="216" width="34" height="80"  rx="17"/>
+  </g>
+</svg>

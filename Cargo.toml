@@ -1,0 +1,15 @@
+[workspace]
+resolver = "2"
+members = ["crates/sotto-dict", "crates/sotto-stt", "crates/sotto-core", "src-tauri"]
+exclude = ["vendor/voxrt"]
+
+[workspace.package]
+version = "1.0.0"
+edition = "2021"
+license = "MIT"
+
+[workspace.dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+unicode-normalization = "0.1"

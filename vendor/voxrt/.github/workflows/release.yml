@@ -1,0 +1,76 @@
+name: release
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+jobs:
+  cli:
+    strategy:
+      matrix:
+        include:
+          - { os: ubuntu-latest, name: linux-x86_64, targets: x86_64-unknown-linux-gnu }
+          # universal: arm64 + x86_64 (Intel Macs, cross-compiled), merged with lipo
+          - { os: macos-latest, name: darwin-universal, targets: aarch64-apple-darwin x86_64-apple-darwin }
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - run: rustup target add ${{ matrix.targets }}
+      - shell: bash
+        run: |
+          set -euo pipefail
+          for T in ${{ matrix.targets }}; do cargo build --release -p voxrt-cli -p voxrt-ffi --target "$T"; done
+          mkdir -p dist out
+          for f in voxrt libvoxrt.a libvoxrt.so libvoxrt.dylib; do
+            ins=(); for T in ${{ matrix.targets }}; do [ -f "target/$T/release/$f" ] && ins+=("target/$T/release/$f"); done
+            [ ${#ins[@]} -eq 0 ] && continue
+            if [ ${#ins[@]} -gt 1 ]; then lipo -create "${ins[@]}" -output "out/$f"; else cp "${ins[0]}" "out/$f"; fi
+          done
+          tar -C out -czf dist/voxrt-${{ github.ref_name }}-${{ matrix.name }}.tar.gz voxrt
+          tar -czf dist/libvoxrt-${{ github.ref_name }}-${{ matrix.name }}.tar.gz -C out $(ls out | grep '^libvoxrt') -C "$PWD" include/voxrt.h
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cli-${{ matrix.name }}
+          path: dist/*
+  wheels:
+    strategy:
+      matrix:
+        include:
+          - { os: ubuntu-latest, target: x86_64 }
+          - { os: macos-latest, target: universal2-apple-darwin }   # one wheel for Apple Silicon and Intel Macs
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: PyO3/maturin-action@v1
+        with:
+          working-directory: bindings/python
+          command: build
+          target: ${{ matrix.target }}
+          args: --release -o ../../dist
+          manylinux: auto
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wheels-${{ matrix.os }}
+          path: dist/*.whl
+  publish:
+    needs: [cli, wheels]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    permissions: { contents: write }
+    steps:
+      - uses: actions/download-artifact@v4
+        with: { path: dist, merge-multiple: true }
+      - run: cd dist && sha256sum * > SHA256SUMS
+      - uses: softprops/action-gh-release@v2
+        with: { files: dist/*, generate_release_notes: true }
+  pypi:
+    # trusted publishing: PyPI accepts this workflow (release.yml) of lmaksym/voxrt without a stored token
+    needs: [wheels]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    environment: pypi
+    permissions: { id-token: write }
+    steps:
+      - uses: actions/download-artifact@v4
+        with: { pattern: wheels-*, path: dist, merge-multiple: true }
+      - uses: pypa/gh-action-pypi-publish@release/v1

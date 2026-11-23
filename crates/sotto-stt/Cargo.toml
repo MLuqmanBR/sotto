@@ -1,0 +1,15 @@
+[package]
+name = "sotto-stt"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Sotto speech-to-text sidecar: private NDJSON protocol over voxrt"
+
+[[bin]]
+name = "sotto-stt"
+path = "src/main.rs"
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+voxrt = { path = "../../vendor/voxrt/crates/voxrt" }
