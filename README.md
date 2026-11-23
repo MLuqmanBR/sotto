@@ -307,16 +307,16 @@ support them.
 
 ## Known limitations
 
-- **A held chord's release edge on Wayland** is exercised by the shortcut
-  decision tests and the chord registers with the compositor, but only a real
-  held keypress proves KWin delivers the release. If a release is ever lost, the
-  300-second ceiling ends the take; it cannot record forever.
 - **Wayland multi-monitor placement** and a physically separate second display
   are not covered by the test machine. X11 placement is tested against a virtual
   monitor at a non-zero origin.
 - **X11 was reached through Xwayland.** A native Xorg session may differ.
 - **Wayland text insertion** needs `wtype` or `ydotool`; without one, delivery
   goes to the clipboard and the app says so.
+
+A held chord's release edge on Wayland was verified by real use on Fedora 44 KDE
+on 2026-11-23: press starts, release stops, nothing hangs. The 300-second ceiling
+remains as a safety net if a release is ever lost by the compositor.
 
 ---
 
