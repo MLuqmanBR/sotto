@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360">
+  <!--
+    README banner for Sotto.
+
+    Rendered to PNG for the README so it displays identically on GitHub, where
+    SVG in markdown is unreliable. The artwork is the application icon itself,
+    drawn from the same geometry as src-tauri/icons/sotto.svg so the banner can
+    never drift from the icon the app actually ships.
+
+    Everything is centred on x=600: the icon, the wordmark and the tagline.
+  -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1B2030"/>
+      <stop offset="1" stop-color="#0B0D11"/>
+    </linearGradient>
+    <linearGradient id="wave" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6FA6FF"/>
+      <stop offset="1" stop-color="#2F6BE0"/>
+    </linearGradient>
+    <linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.07"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="10" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="softglow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="26"/>
+    </filter>
+  </defs>
+
+  <!-- background -->
+  <rect width="1200" height="360" fill="url(#bg)"/>
+  <rect width="1200" height="360" fill="url(#sheen)"/>
+
+  <!-- a soft accent bloom behind the icon and wordmark, centred -->
+  <ellipse cx="600" cy="146" rx="440" ry="126" fill="#2F6BE0" opacity="0.13" filter="url(#softglow)"/>
+
+  <!-- ── icon, centred at x=600, 140 px tall ────────────────────────────── -->
+  <g transform="translate(530 38) scale(0.2734)">
+    <rect x="16" y="16" width="480" height="480" rx="112" fill="url(#bg)"/>
+    <rect x="16" y="16" width="480" height="480" rx="112" fill="none"
+          stroke="#2A3145" stroke-width="3"/>
+    <rect x="40" y="40" width="432" height="432" rx="92" fill="none"
+          stroke="#FFFFFF" stroke-opacity="0.045" stroke-width="2"/>
+    <g filter="url(#glow)" fill="url(#wave)">
+      <rect x="118" y="216" width="34" height="80"  rx="17"/>
+      <rect x="176" y="168" width="34" height="176" rx="17"/>
+      <rect x="234" y="112" width="34" height="288" rx="17"/>
+      <rect x="292" y="168" width="34" height="176" rx="17"/>
+      <rect x="350" y="216" width="34" height="80"  rx="17"/>
+    </g>
+  </g>
+
+  <!-- ── wordmark, centred on x=600 ─────────────────────────────────────── -->
+  <text x="600" y="266" text-anchor="middle"
+        font-family="Cantarell, Inter, 'DejaVu Sans', sans-serif"
+        font-size="88" font-weight="700" letter-spacing="1"
+        fill="#F2F5FA">Sotto</text>
+
+  <!-- ── tagline, centred on x=600 ──────────────────────────────────────── -->
+  <text x="600" y="308" text-anchor="middle"
+        font-family="Cantarell, Inter, 'DejaVu Sans', sans-serif"
+        font-size="24" font-weight="500" letter-spacing="0.4"
+        fill="#8FA0BC">Quiet, local-first dictation for Linux</text>
+
+  <!-- hairline rule under the tagline, centred -->
+  <rect x="486" y="330" width="228" height="2" rx="1" fill="#4C8DFF" opacity="0.55"/>
+</svg>

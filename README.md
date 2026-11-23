@@ -1,11 +1,31 @@
-# Sotto
+<div align="center">
 
-Quiet, local-first dictation for Linux. Hold a key, speak, and your words land
-at the cursor in whatever application you are using. Everything runs on your own
-CPU: nothing is uploaded, there is no account, and the speech model ships inside
-the package — there is nothing to download.
+<img src=".github/banner.png" alt="Sotto — quiet, local-first dictation for Linux" width="100%">
 
-**Version 1.0.0**
+<br>
+<br>
+
+**Quiet, local-first dictation for Linux.** Hold a key, speak, and your words land
+at the cursor. Everything runs on your own CPU.
+
+<br>
+
+[![Version](https://img.shields.io/badge/version-1.0.0-4C8DFF?style=flat-square)](https://github.com/MLuqmanBR/sotto/releases/tag/v1.0.0)
+[![Platform](https://img.shields.io/badge/platform-Linux%20x86--64-2B3346?style=flat-square)](#requirements)
+[![CPU only](https://img.shields.io/badge/runtime-CPU%20only-2B3346?style=flat-square)](#what-is-inside)
+[![Offline](https://img.shields.io/badge/network-none%20at%20runtime-2B3346?style=flat-square)](#privacy)
+[![Licence](https://img.shields.io/badge/licence-MIT-2B3346?style=flat-square)](LICENSE)
+[![Signed](https://img.shields.io/badge/packages-signed-2FB56B?style=flat-square)](#verify-the-download)
+
+<br>
+
+**[Install](#install)** ·
+**[Use](#use)** ·
+**[Privacy](#privacy)** ·
+**[Build from source](#build-from-source)** ·
+**[Verify the download](#verify-the-download)**
+
+</div>
 
 ---
 
@@ -39,6 +59,72 @@ clipboard and says so, rather than claiming the text was typed.
 
 Uninstall with `sudo dnf remove sotto` or `sudo apt remove sotto`. Your settings
 and history are not touched.
+
+---
+
+## Requirements
+
+| | |
+|---|---|
+| System | x86-64 Linux with a desktop session. Developed and tested on Fedora 44 KDE on Wayland; X11 also works |
+| Audio | PipeWire or PulseAudio |
+| Libraries | GTK 3 and WebKitGTK 4.1 — declared as dependencies by the package, so your package manager installs them |
+| Disk | about 191 MB installed, including the 178 MB model |
+| Memory | up to about 950 MB while the model is loaded; returns to about 87 MB after idle unload |
+| Optional | `wtype` or `ydotool` for typing into other apps on Wayland; `wl-clipboard` or `xclip` for the clipboard |
+
+There is no GPU requirement and no GPU setting. Sotto runs on the CPU.
+
+---
+
+## Verify the download
+
+Every release is signed with the Sotto signing key, so you can confirm the
+package you downloaded is the one that was built.
+
+**Key fingerprint**
+
+```
+FD97 6D32 EA92 4FBB 7825  C4D9 793E 12A5 DAE6 4D6E
+```
+
+Download [`keys/sotto-signing-key.asc`](keys/sotto-signing-key.asc) from this
+repository, or from the release, then verify.
+
+**Fedora / RHEL-family**
+
+```bash
+sudo rpm --import sotto-signing-key.asc
+rpmkeys --checksig sotto-1.0.0-1.x86_64.rpm
+```
+
+You should see `Header OpenPGP V4 RSA/SHA256 signature … : OK` and
+`Payload SHA256 digest: OK`. `dnf` will also report the signature when it
+installs the file.
+
+**Debian / Ubuntu**
+
+```bash
+gpg --verify Sotto_1.0.0_amd64.deb.asc Sotto_1.0.0_amd64.deb
+```
+
+You should see `Good signature from "Sotto Releases"`. Debian has no
+in-package signature that `apt` checks for a locally downloaded file, so the
+signature is shipped beside it as a detached `.asc` — the standard approach for
+a file you install by path.
+
+**Both**
+
+`SHA256SUMS` and `SHA256SUMS.asc` are attached to the release. To check both
+packages at once:
+
+```bash
+gpg --verify SHA256SUMS.asc SHA256SUMS
+sha256sum -c SHA256SUMS
+```
+
+**If a signature does not verify, do not install the package.** A mismatch means
+the file changed after it was signed.
 
 ---
 
