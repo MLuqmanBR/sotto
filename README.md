@@ -290,18 +290,23 @@ package always contains it, so end users never download anything.
 
 The gate runs, in order: release build with no warnings, every workspace test,
 the command-surface and accent-palette checks, shortcut defaults and the
-reserved-chord guard, the isolation suite, the real window driven by its own
-buttons, X11 overlay placement on an offset monitor, the real tray over D-Bus,
-package invariants, real install/uninstall of both formats, and three repeated
-runs to catch flakiness.
+reserved-chord guard, the public README, the isolation suite, the real window
+driven by its own buttons, X11 overlay placement on an offset monitor, the real
+tray over D-Bus, package invariants, signing and signature verification, real
+install/uninstall of both formats, and three repeated runs to catch flakiness.
 
 Current results: **164 workspace tests, 51 isolation checks, 32 GUI checks, 10
-X11 checks, 23 tray checks, 24 shortcut checks, 26 RPM install checks, 24 deb
-install checks, 16 `.deb` + 16 `.rpm` package invariants, 3/3 stable runs.**
+X11 checks, 23 tray checks, 24 shortcut checks, 6 README checks, 9 signing
+checks, 26 RPM install checks, 24 deb install checks, 16 `.deb` + 16 `.rpm`
+package invariants, 3/3 stable runs** — 14 gate steps, all passing.
 
-Some suites need `sudo` (package install), PipeWire/PulseAudio, `kdotool` and a
-desktop session; they skip rather than pretend when the environment cannot
-support them.
+Some steps need things this machine has and a contributor's may not: `sudo` for
+the package install, PipeWire/PulseAudio, `kdotool`, a desktop session, and the
+release signing key. Where a step genuinely cannot run it says so loudly and
+names what was not checked, rather than reporting a pass. Where the environment
+is wrong in a way that would make the result meaningless — another copy of Sotto
+already running, or a package already installed — the step **fails** instead of
+passing untested.
 
 ---
 
